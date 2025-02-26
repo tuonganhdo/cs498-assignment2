@@ -12,7 +12,7 @@ const port = 80;
 // Create a MariaDB connection pool
 const pool = mariadb.createPool({
     host: '127.0.0.1', // Use IP address to force TCP connection
-    port: 3306, // Ensure this is the correct port 
+    port: 80, // Ensure this is the correct port 
     user: 'anhd',
     password: 'anhd', // Replace with your MariaDB password
     database: 'bankdb', // Our database name created above
@@ -60,12 +60,17 @@ app.post('/add', async (req, res) => {
 
 // Route: Add a new customer
 app.get('/greeting', async (req, res) => {
-    let conn;
-    try {
-        res.render('greeting');
-    } catch (err) {
-        res.status(500).send(`Error`);
-    }
+    res.send("<h1>Hello World!</h1>");
+});
+
+// Create a MariaDB connection pool
+const pool2 = mariadb.createPool({
+    host: '127.0.0.1', // Use IP address to force TCP connection
+    port: 80, // Ensure this is the correct port 
+    user: 'anhd',
+    password: 'anhd', // Replace with your MariaDB password
+    database: 'simpledb', // Our database name created above
+    connectionLimit: 5
 });
 
 app.post('/register', async (req, res) => {
@@ -73,7 +78,7 @@ app.post('/register', async (req, res) => {
     // Generate a random balance between 100 and 10,000 (two decimal places)
     let conn;
     try {
-        conn = await pool.getConnection();
+        conn = await pool2.getConnection();
         await conn.query('INSERT INTO Users(username, name) VALUES (?, ?)', [username, username]);
         res.redirect('/');
     } catch (err) {
@@ -87,7 +92,7 @@ app.get('/list', async (req, res) => {
     const users = req.body.users;
     let conn;
     try {
-        conn = await pool.getConnection();
+        conn = await pool2.getConnection();
         const rows = await conn.query("SELECT username FROM Users");
         res.json({ users: rows.map(row => row.username) });
     } catch (err) {
@@ -100,7 +105,7 @@ app.get('/list', async (req, res) => {
 app.post('/clear', async (req, res) => {
     let conn;
     try {
-        conn = await pool.getConnection();
+        conn = await pool2.getConnection();
         await conn.query('DELETE FROM Users');
         res.redirect('/');
     } catch (err) {
