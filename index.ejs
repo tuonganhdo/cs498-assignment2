@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Bank Customers</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            table { border-collapse: collapse; width: 50%; }
+            table, th, td { border: 1px solid #ccc; }
+            th, td { padding: 8px; text-align: left; }
+            form { margin-bottom: 20px; }
+        </style>
+    </head>
+    <body>
+        <h1>Bank Customers</h1>
+        <!-- Form to add a new customer -->
+        <form action="/add" method="POST">
+            <input type="text" name="name" placeholder="Enter customer name" required>
+            <button type="submit">Add Customer</button>
+        </form>
+            
+        <!-- Table of existing customers -->
+        <h2>Customer List</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Balance</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (customers && customers.length) { %>
+                <% customers.forEach(customer => { %>
+                <tr>
+                    <td><%= customer.id %></td>
+                    <td><%= customer.name %></td>
+                    <td>$<%= customer.balance %></td>
+                </tr>
+                <% }); %>
+                <% } else { %>
+                <tr>
+                    <td colspan="3">No customers found.</td>
+                </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </body>
+</html>
